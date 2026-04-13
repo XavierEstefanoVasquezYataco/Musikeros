@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>En vivo | Andrés Yataco & sus Musikeros</title>
+
+  <link rel="icon" href="assets/logo-musikeros.png" type="image/png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800;900&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="navbar">
+    <a href="index.html" class="logo-wrap">
+      <img src="assets/logo-musikeros.png" alt="Logo Andrés Yataco & sus Musikeros" class="logo-img" />
+      <span class="logo-text">Andrés Yataco &amp; sus Musikeros</span>
+    </a>
+
+    <button class="hamburger" id="hamburgerBtn" aria-label="Abrir menú" aria-controls="navLinks" aria-expanded="false">
+      <i class="fas fa-bars"></i>
+    </button>
+
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Inicio</a></li>
+      <li><a href="integrantes.html">Integrantes</a></li>
+      <li><a href="en-vivo.html">En vivo</a></li>
+      <li><a href="#contacto">Contacto</a></li>
+    </ul>
+  </header>
+
+  <main class="en-vivo-page">
+    <section class="hero-section hero-b-layout en-vivo-hero">
+      <div class="hero-overlay"></div>
+
+      <div class="hero-content container">
+        <div class="hero-top">
+          <span class="hero-badge">SHOWS EN VIVO</span>
+          <h1>La energía de la banda en tu escenario</h1>
+          <p>Presentaciones privadas, familiares y corporativas disponibles en Lima y alrededores.</p>
+        </div>
+
+        <div class="hero-logo-center" aria-hidden="true"></div>
+
+        <div class="hero-bottom">
+          <p id="liveStatusText">Verificando estado de transmisión...</p>
+          <p id="liveEventTitle" class="live-event-title" hidden></p>
+          <div class="hero-cta-group">
+            <a href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer" class="cta-button cta-ghost btn-envivo">
+              Ver en YouTube
+            </a>
+            <a href="#contacto" class="cta-button cta-live">
+              <span class="live-dot"></span>
+              Reservar fecha
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="live-player" class="live-player-section">
+      <div class="container">
+        <div class="section-head">
+          <h2 id="livePlayerTitle">Transmisión en vivo</h2>
+          <span id="liveBadge" class="live-badge">Cargando...</span>
+        </div>
+
+        <div id="liveSpecialBox" class="live-special-box" hidden>
+          <h3 id="liveSpecialTitle" class="live-special-title">Mensaje especial</h3>
+          <p id="liveSpecialText" class="live-special-text"></p>
+        </div>
+
+        <div class="live-player-card live-player-card-lg">
+          <div class="media-embed youtube-container live-main-player" id="ytLiveWrap" hidden>
+            <iframe
+              id="ytLiveIframe"
+              src=""
+              title="Reproductor YouTube Live"
+              allow="autoplay; encrypted-media; picture-in-picture; web-share"
+              allowfullscreen
+              loading="lazy"
+            ></iframe>
+          </div>
+
+          <div class="media-embed facebook-container live-main-player" id="fbLiveWrap" hidden>
+            <iframe
+              id="fbLiveIframe"
+              src=""
+              title="Reproductor Facebook Live"
+              allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+              allowfullscreen
+              loading="lazy"
+              scrolling="no"
+              style="border:none;overflow:hidden"
+            ></iframe>
+          </div>
+
+          <div id="ytFallback" class="live-fallback">
+            <p id="liveFallbackText" class="live-status-text">
+              No hay transmisión configurada ahora mismo.
+            </p>
+            <a href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer" class="cta-button cta-ghost btn-envivo">
+              Abrir YouTube
+            </a>
+          </div>
+
+          <p id="livePlayerSubtitle" class="live-player-subtitle">
+            Cargando información de la transmisión...
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta-final" id="contacto">
+      <div class="container">
+        <div class="cta-final-box">
+          <div>
+            <h2>Reserva la banda para tu próxima fecha</h2>
+            <p>Cuéntanos sobre tu evento y preparamos una propuesta a medida.</p>
+          </div>
+          <a href="https://wa.me/51987690625?text=Hola%20Andr%C3%A9s%20Yataco%20%26%20sus%20Musikeros%2C%20quiero%20consultar%20disponibilidad%20para%20un%20evento."
+             target="_blank" rel="noopener noreferrer" class="cta-button">
+            Consultar disponibilidad
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="modal" id="videoModal" aria-hidden="true">
+    <div class="modal-content">
+      <button class="close-modal" id="closeModal" aria-label="Cerrar video">&times;</button>
+      <div class="youtube-container">
+        <iframe id="youtubePlayer"
+          allow="autoplay; encrypted-media; picture-in-picture; web-share"
+          allowfullscreen
+          title="Reproductor de YouTube"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="container">
+      <p>© 2020–2026 Andrés Yataco &amp; sus Musikeros. Todos los derechos reservados.</p>
+      <div class="social-links">
+        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+      </div>
+    </div>
+  </footer>
+
+  <a href="https://wa.me/51987690625?text=Hola%20Los%20Musikeros%2C%20quiero%20informaci%C3%B3n%20para%20un%20evento."
+     id="whatsappBtn"
+     class="whatsapp-float"
+     target="_blank"
+     rel="noopener noreferrer">
+    <i class="fab fa-whatsapp"></i>
+    <span class="wa-text">Escríbenos</span>
+  </a>
+
+  <script src="script.js"></script>
+</body>
+</html>

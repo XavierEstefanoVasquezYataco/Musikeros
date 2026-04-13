@@ -1,0 +1,8 @@
+/admin-live.html
+  Basic-Auth: admin:041090
+
+/.netlify/functions/set-live
+  Basic-Auth: admin:041090
+
+/.netlify/functions/set-live/*
+  Basic-Auth: admin:041090

@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Admin Live</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .admin-wrap{max-width:920px;margin:26px auto;padding:16px}
+    .box{border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:16px;background:rgba(0,0,0,.22)}
+    .row{display:grid;gap:10px;margin-top:12px}
+    input, select, textarea{width:100%;padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,.15);background:rgba(0,0,0,.25);color:#fff}
+    textarea{min-height:110px;resize:vertical}
+    label{font-weight:700}
+    .hint{opacity:.85;font-size:14px;margin:8px 0 0}
+    .ok{color:#22c55e}.bad{color:#ef4444}
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .mini-card{margin-top:14px;padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.03)}
+    @media (max-width: 720px){.grid2{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <div class="admin-wrap">
+    <h2>Panel Admin — Live + mensaje especial</h2>
+    <p class="hint">
+      Desde aquí puedes cambiar la plataforma del live, pegar la URL actual y mostrar un mensaje especial apenas entren a la web.
+      <br><br>
+      <b>YouTube:</b> watch, youtu.be, live, embed o ID directo.
+      <br>
+      <b>Facebook:</b> pega el enlace del video o live público.
+      <br><br>
+      Si dejas la URL vacía, el live queda apagado.
+    </p>
+
+    <div class="box">
+      <div class="grid2">
+        <div class="row">
+          <label>Usuario (Basic Auth)</label>
+          <input id="user" type="text" placeholder="admin" value="admin" />
+        </div>
+        <div class="row">
+          <label>Clave (Basic Auth)</label>
+          <input id="pass" type="password" placeholder="041090" />
+        </div>
+      </div>
+
+      <div class="grid2">
+        <div class="row">
+          <label>Plataforma</label>
+          <select id="platform">
+            <option value="youtube">YouTube</option>
+            <option value="facebook">Facebook</option>
+          </select>
+        </div>
+        <div class="row">
+          <label>Título corto del evento</label>
+          <input id="eventTitle" type="text" placeholder="Cumpleaños de Maricela" />
+        </div>
+      </div>
+
+      <div class="row">
+        <label>URL del live</label>
+        <input id="url" type="text" placeholder="https://www.youtube.com/watch?v=ABCDEFGHIJK o https://www.facebook.com/..." />
+      </div>
+
+      <div class="row">
+        <label>Mensaje especial visible al entrar</label>
+        <textarea id="specialMessage" placeholder="Hoy celebramos el cumpleaños de Maricela. ¡Gracias por acompañarnos en esta noche especial!"></textarea>
+      </div>
+
+      <div class="mini-card">
+        <p class="hint" style="margin:0">
+          Sugerencia: usa un título corto y un mensaje breve. Si cierras el live con “Apagar live”, también se limpiará el aviso.
+        </p>
+      </div>
+
+      <div class="grid2" style="margin-top:12px">
+        <button class="cta-button" id="save">Guardar</button>
+        <button class="cta-button cta-ghost" id="load">Cargar actual</button>
+      </div>
+
+      <div class="grid2" style="margin-top:12px">
+        <button class="cta-button cta-ghost" id="clear">Apagar live</button>
+        <a class="cta-button cta-ghost" href="en-vivo.html" target="_blank" rel="noopener">Abrir en-vivo.html</a>
+      </div>
+
+      <p id="msg" class="hint"></p>
+    </div>
+  </div>
+
+  <script>
+    const msg = document.getElementById("msg");
+    const userEl = document.getElementById("user");
+    const passEl = document.getElementById("pass");
+    const platformEl = document.getElementById("platform");
+    const urlEl = document.getElementById("url");
+    const eventTitleEl = document.getElementById("eventTitle");
+    const specialMessageEl = document.getElementById("specialMessage");
+
+    function setMsg(text, ok = true) {
+      msg.textContent = text;
+      msg.className = "hint " + (ok ? "ok" : "bad");
+    }
+
+    function authHeader() {
+      const u = (userEl.value || "").trim();
+      const p = (passEl.value || "").trim();
+      const token = btoa(u + ":" + p);
+      return "Basic " + token;
+    }
+
+    async function loadCurrent() {
+      setMsg("Cargando...", true);
+      try {
+        const r = await fetch("/.netlify/functions/get-live", { cache: "no-store" });
+        const j = await r.json();
+        if (!r.ok || !j.ok) throw new Error(j.error || "Error");
+
+        platformEl.value = j.platform || "youtube";
+        urlEl.value = j.live_url || "";
+        eventTitleEl.value = j.event_title || "";
+        specialMessageEl.value = j.special_message || "";
+
+        setMsg("Configuración actual cargada.", true);
+      } catch (e) {
+        setMsg("Error: " + e.message, false);
+      }
+    }
+
+    async function saveConfig(payload) {
+      setMsg("Guardando...", true);
+      try {
+        const r = await fetch("/.netlify/functions/set-live", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": authHeader()
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const j = await r.json().catch(() => ({}));
+        if (!r.ok || !j.ok) throw new Error(j.error || ("HTTP " + r.status));
+
+        platformEl.value = j.platform || "youtube";
+        urlEl.value = j.live_url || "";
+        eventTitleEl.value = j.event_title || "";
+        specialMessageEl.value = j.special_message || "";
+
+        setMsg("Guardado ✅", true);
+      } catch (e) {
+        setMsg("No se pudo guardar: " + e.message, false);
+      }
+    }
+
+    document.getElementById("load").addEventListener("click", loadCurrent);
+
+    document.getElementById("save").addEventListener("click", () => {
+      saveConfig({
+        platform: (platformEl.value || "youtube").trim(),
+        live_url: (urlEl.value || "").trim(),
+        event_title: (eventTitleEl.value || "").trim(),
+        special_message: (specialMessageEl.value || "").trim()
+      });
+    });
+
+    document.getElementById("clear").addEventListener("click", () => {
+      saveConfig({
+        platform: (platformEl.value || "youtube").trim(),
+        live_url: "",
+        event_title: "",
+        special_message: ""
+      });
+    });
+
+    loadCurrent();
+  </script>
+</body>
+</html>
